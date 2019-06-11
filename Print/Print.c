@@ -4,7 +4,7 @@
 
 
 /**
- * ³õÊ¼»¯´òÓ¡¹ı³Ì£¬¶Ô½á¹¹ÌåÄÚµÄ±äÁ¿¸³Öµ
+ * åˆå§‹åŒ–æ‰“å°è¿‡ç¨‹ï¼Œå¯¹ç»“æ„ä½“å†…çš„å˜é‡èµ‹å€¼
  */
 void Print_Init(Print_State * State , u16* array){
 		delay_init();
@@ -13,14 +13,14 @@ void Print_Init(Print_State * State , u16* array){
 		LCD_Display_Dir(1);			//Horizontal
 		POINT_COLOR=RED;	
 		State->Horizontal_Gap = 8;
-	  State->Array = array;
+	  	State->Array = array;
 		State->Vertical_Gap = 5;
 		State->Framex_Start = 0;
 		State->Framey_Start = 40;
 		State->H_Scale = 100000;    //1000ns=1us
-		State->V_Scale = 5000;     //500mvÒ»¸ñ
+		State->V_Scale = 5000;     //500mvä¸€æ ¼
 		
-		///Íâ²¿´«Èë
+		///å¤–éƒ¨ä¼ å…¥
 		State->Start_Position = 0;
 		State->Sample_Rate = 11;
 		State->gnd = 140;
@@ -28,8 +28,8 @@ void Print_Init(Print_State * State , u16* array){
 
 
 /**
- * ¸ù¾İ¸÷ÖÖ²ÎÊıÏÔÊ¾Ò»ÆÁµÄÊı¾İ
- * Demo:ÒÔÄ¿Ç°³õÊ¼»¯µÄÊı¾İ¼ÆËã£¬¼´¼ÙÉèÒ»¸öÍø¸ñµÄ³¤ºÍ¿í¶¼ÊÇ40
+ * æ ¹æ®å„ç§å‚æ•°æ˜¾ç¤ºä¸€å±çš„æ•°æ®
+ * Demo:ä»¥ç›®å‰åˆå§‹åŒ–çš„æ•°æ®è®¡ç®—ï¼Œå³å‡è®¾ä¸€ä¸ªç½‘æ ¼çš„é•¿å’Œå®½éƒ½æ˜¯40
  */
 void Print_Frame(Print_State * State){    
 		u16 true_Sample_Rate;
@@ -40,10 +40,10 @@ void Print_Frame(Print_State * State){
 		int i = 0;
 		if(State->Sample_Rate == 11)true_Sample_Rate = 857;//<   kHz
 		if(State->Sample_Rate == 12)true_Sample_Rate = 10;
-    if(State->Sample_Rate == 21)true_Sample_Rate = 1;
+    		if(State->Sample_Rate == 21)true_Sample_Rate = 1;
 		POINT_COLOR=YELLOW;
 		Sample_t = 1.0/true_Sample_Rate;                  //<  ms
-		if(State->H_Scale/(40*1000000.0) > Sample_t){                //< Å×ÆúÊı×éÄÚµÄµã
+		if(State->H_Scale/(40*1000000.0) > Sample_t){                //< æŠ›å¼ƒæ•°ç»„å†…çš„ç‚¹
 				Print_Gap = (State->H_Scale/(40*1000000.0))/Sample_t + 0.5;
 				for(i = State->Start_Position ; i < 800 ; i+=Print_Gap){
 						LCD_DrawPoint(count,get_Y(State, State->Array[i]));
@@ -51,7 +51,7 @@ void Print_Frame(Print_State * State){
 						count++;
 				}
 		}
-		else{                                             //< Å×ÆúÆÁÄ»ÉÏµÄµã
+		else{                                             //< æŠ›å¼ƒå±å¹•ä¸Šçš„ç‚¹
 				Print_Gap = Sample_t/(State->H_Scale/(40*1000000.0)) + 0.5;
 				for(i = State->Start_Position ; i < 800 ; ++i){
 						LCD_DrawPoint(count,get_Y(State, State->Array[i]));
@@ -63,7 +63,7 @@ void Print_Frame(Print_State * State){
 
 
 /**
- * ÏÔÊ¾ºÚÉ«±³¾°£¬±³¾°Íø¸ñÏß£¬ºÍ×ø±êÖá
+ * æ˜¾ç¤ºé»‘è‰²èƒŒæ™¯ï¼ŒèƒŒæ™¯ç½‘æ ¼çº¿ï¼Œå’Œåæ ‡è½´
  */
 void Print_Grid(Print_State * State){
 		LCD_Clear(BLACK);
@@ -74,14 +74,14 @@ void Print_Grid(Print_State * State){
 }
 
 /**
- * ÏÔÊ¾Ë®Æ½Íø¸ñĞéÏß
+ * æ˜¾ç¤ºæ°´å¹³ç½‘æ ¼è™šçº¿
  */
 void Print_Horizional_Grid(Print_State * State){
 			u16 y = State->Framey_Start;
 			u16 tmp = State->Framex_Start;
 			POINT_COLOR=GRAY;
 			for(;y <=240;y+=(240-State->Framey_Start)/State->Vertical_Gap){//(240-State->Framey_Start)/State->Horizontal_Gap
-					for(;tmp<=320;tmp+=10){   //<ĞéÏß¼ä¾àÎª10
+					for(;tmp<=320;tmp+=10){   //<è™šçº¿é—´è·ä¸º10
 							LCD_DrawLine(tmp,y,tmp+5,y);
 					}
 					tmp = State->Framex_Start;
@@ -89,22 +89,21 @@ void Print_Horizional_Grid(Print_State * State){
 }
 
 /**
- * ÏÔÊ¾Íø¸ñĞéÏß
+ * æ˜¾ç¤ºç½‘æ ¼è™šçº¿
  */
 void Print_Vertical_Grid(Print_State * State){
 			u16 x = State->Framex_Start;
 			u16 tmp = State->Framey_Start;
 			POINT_COLOR=GRAY;
 			for(;x <=320;x+=(320-State->Framex_Start)/State->Horizontal_Gap){//(240-State->Framex_Start)/State->Horizontal_Gap
-					for(;tmp<=320;tmp+=10){
-							LCD_DrawLine(x,tmp,x,tmp+5);
-					}
+					for(;tmp<=320;tmp+=10)
+						LCD_DrawLine(x,tmp,x,tmp+5);
 					tmp = State->Framey_Start;
 			}
 }
 
 /**
- * ÏÔÊ¾×ø±êÖá
+ * æ˜¾ç¤ºåæ ‡è½´
  */
 void display_Axis(void)
 {
@@ -115,19 +114,19 @@ void display_Axis(void)
 
 
 /**
- * ÏÔÊ¾×ø±êÖá¿Ì¶È
+ * æ˜¾ç¤ºåæ ‡è½´åˆ»åº¦
  */
 void display_AxisPoint(void)
 {
 	int i;
 	for (i=0;i<36;++i){
 		POINT_COLOR=WHITE;
-		LCD_DrawLine(10*i,137,10*i,140); //<¼ä¾àÎª10£¬³¤¶ÈÎª140-137=3
+		LCD_DrawLine(10*i,137,10*i,140); //<é—´è·ä¸º10ï¼Œé•¿åº¦ä¸º140-137=3
 	}
 		for (i=4;i<24;++i){
-		POINT_COLOR=WHITE;
-		LCD_DrawLine(160,10*i,163,10*i); //<¼ä¾àÎª10£¬³¤¶ÈÎª163-160=3
-	}
+			POINT_COLOR=WHITE;
+			LCD_DrawLine(160,10*i,163,10*i); //<é—´è·ä¸º10ï¼Œé•¿åº¦ä¸º163-160=3
+		}
 }
 
 
@@ -139,14 +138,14 @@ double get_Y(Print_State * State, u16 raw_y){
 }
 
 /**
- * ¸Ä±ä²ÉÑùÂÊ²ÎÊı
+ * æ”¹å˜é‡‡æ ·ç‡å‚æ•°
  */
 void change_Sample_Rate(Print_State * State, u8 New_Sample_rate){
 		State->Sample_Rate = New_Sample_rate;
 }
 
 /**
- * ¸Ä±äÆğÊ¼Î»ÖÃ²ÎÊı
+ * æ”¹å˜èµ·å§‹ä½ç½®å‚æ•°
  */
 void change_Start_Position(Print_State * State, u16 New_Start_Position){
 		State->Start_Position = New_Start_Position;
